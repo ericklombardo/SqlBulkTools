@@ -20,17 +20,17 @@ namespace SqlBulkToolsCore
         /// <param name="connection"></param>
         /// <returns></returns>
         Task CommitTransactionAsync(SqlConnection connection);
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="connectionString"></param>
-        void CommitTransaction(string connectionString);
+        void CommitTransaction();
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="connectionString"></param>
         /// <returns></returns>
-        Task CommitTransactionAsync(string connectionString);
+        Task CommitTransactionAsync();
 
         /// <summary>
         /// 

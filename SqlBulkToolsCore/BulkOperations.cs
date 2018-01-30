@@ -11,7 +11,13 @@ namespace SqlBulkToolsCore
     {
         private ITransaction _transaction;
         private const string SourceAlias = "Source";
-        private const string TargetAlias = "Target";  
+        private const string TargetAlias = "Target";
+
+        private readonly string _connectionString;
+        public BulkOperations(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
 
         internal void SetBulkExt(ITransaction transaction)
         {
@@ -25,18 +31,13 @@ namespace SqlBulkToolsCore
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        /// <param name="connectionString"></param>
-        public void CommitTransaction(string connectionString)
+        public void CommitTransaction()
         {
-            if (connectionString == null)
-                throw new ArgumentNullException(nameof(connectionString) + " not given");
-
-
             if (_transaction == null)
                 throw new InvalidOperationException("No setup found. Use the Setup method to build a new setup then try again.");
             
 
-            _transaction.CommitTransaction(connectionString);
+            _transaction.CommitTransaction(_connectionString);
         }
 
         /// <summary>
@@ -44,19 +45,15 @@ namespace SqlBulkToolsCore
         /// successful. Notes: (1) The connectionName parameter is a name that you provide to 
         /// uniquely identify a connection string so that it can be retrieved at run time.
         /// </summary>
-        /// <param name="connectionString"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task CommitTransactionAsync(string connectionString)
+        public async Task CommitTransactionAsync()
         {
-            if (connectionString == null)
-                throw new ArgumentNullException(nameof(connectionString) + " not given");
-
             if (_transaction == null)
                 throw new InvalidOperationException("No setup found. Use the Setup method to build a new setup then try again.");
 
-            await _transaction.CommitTransactionAsync(connectionString);
+            await _transaction.CommitTransactionAsync(_connectionString);
         }
 
 
