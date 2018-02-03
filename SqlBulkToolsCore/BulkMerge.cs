@@ -13,7 +13,7 @@ namespace SqlBulkToolsCore
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class BulkInsertOrUpdate<T> : ITransaction
+    public class BulkMerge<T> : ITransaction
     {
         private readonly IEnumerable<T> _list;
         private readonly string _tableName;
@@ -56,7 +56,7 @@ namespace SqlBulkToolsCore
         /// <param name="bulkCopyBatchSize"></param>
         /// <param name="sqlBulkCopyOptions"></param>
         /// <param name="ext"></param>
-        public BulkInsertOrUpdate(IEnumerable<T> list, string tableName, string schema, HashSet<string> columns, HashSet<string> disableIndexList, bool disableAllIndexes, string sourceAlias, string targetAlias,
+        public BulkMerge(IEnumerable<T> list, string tableName, string schema, HashSet<string> columns, HashSet<string> disableIndexList, bool disableAllIndexes, string sourceAlias, string targetAlias,
             Dictionary<string, string> customColumnMappings, int sqlTimeout, int bulkCopyTimeout, bool bulkCopyEnableStreaming,
             int? bulkCopyNotifyAfter, int? bulkCopyBatchSize, SqlBulkCopyOptions sqlBulkCopyOptions, BulkOperations ext)
         {
@@ -90,7 +90,7 @@ namespace SqlBulkToolsCore
         /// </summary>
         /// <param name="columnName"></param>
         /// <returns></returns>
-        public BulkInsertOrUpdate<T> MatchTargetOn(Expression<Func<T, object>> columnName)
+        public BulkMerge<T> MatchTargetOn(Expression<Func<T, object>> columnName)
         {
             var propertyName = _helper.GetPropertyName(columnName);
 
@@ -109,7 +109,7 @@ namespace SqlBulkToolsCore
         /// <param name="columnName"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public BulkInsertOrUpdate<T> SetIdentityColumn(Expression<Func<T, object>> columnName)
+        public BulkMerge<T> SetIdentityColumn(Expression<Func<T, object>> columnName)
         {
 
             var propertyName = _helper.GetPropertyName(columnName);
@@ -136,7 +136,7 @@ namespace SqlBulkToolsCore
         /// <param name="outputIdentity"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public BulkInsertOrUpdate<T> SetIdentityColumn(Expression<Func<T, object>> columnName, bool outputIdentity)
+        public BulkMerge<T> SetIdentityColumn(Expression<Func<T, object>> columnName, bool outputIdentity)
         {
             _outputIdentity = outputIdentity;
 
@@ -161,7 +161,7 @@ namespace SqlBulkToolsCore
         /// </summary>
         /// <param name="flag"></param>
         /// <returns></returns>
-        public BulkInsertOrUpdate<T> DeleteWhenNotMatched(bool flag)
+        public BulkMerge<T> DeleteWhenNotMatched(bool flag)
         {
             _deleteWhenNotMatchedFlag = flag;
             return this;

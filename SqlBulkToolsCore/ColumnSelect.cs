@@ -149,9 +149,9 @@ namespace SqlBulkToolsCore
         /// will be evaluated. (3) Use AddAllColumns to add all columns in table.
         /// </summary>
         /// <returns></returns>
-        public BulkInsertOrUpdate<T> BulkInsertOrUpdate()
+        public BulkMerge<T> BulkMerge()
         {
-            return new BulkInsertOrUpdate<T>(_list, _tableName, _schema, _columns, _disableIndexList, _disableAllIndexes, _sourceAlias, _targetAlias,
+            return new BulkMerge<T>(_list, _tableName, _schema, _columns, _disableIndexList, _disableAllIndexes, _sourceAlias, _targetAlias,
                 CustomColumnMappings, _sqlTimeout, _bulkCopyTimeout, _bulkCopyEnableStreaming, _bulkCopyNotifyAfter, 
                 _bulkCopyBatchSize, _sqlBulkCopyOptions, _ext);
         }
