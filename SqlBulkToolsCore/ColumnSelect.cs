@@ -23,6 +23,7 @@ namespace SqlBulkToolsCore
         private readonly int? _bulkCopyBatchSize;
         private readonly BulkOperations _ext;
         private Dictionary<string, string> CustomColumnMappings { get; set; }
+        private readonly Dictionary<string, string> _customColumnCollationMappings;
         private readonly BulkOperationsHelpers _helper;
         private readonly HashSet<string> _columns;
         private bool _disableAllIndexes;
@@ -67,6 +68,7 @@ namespace SqlBulkToolsCore
             _ext = ext;
             _sqlBulkCopyOptions = sqlBulkCopyOptions;
             CustomColumnMappings = new Dictionary<string, string>();
+            _customColumnCollationMappings = new Dictionary<string, string>();
         }
 
 
@@ -153,7 +155,7 @@ namespace SqlBulkToolsCore
         {
             return new BulkMerge<T>(_list, _tableName, _schema, _columns, _disableIndexList, _disableAllIndexes, _sourceAlias, _targetAlias,
                 CustomColumnMappings, _sqlTimeout, _bulkCopyTimeout, _bulkCopyEnableStreaming, _bulkCopyNotifyAfter, 
-                _bulkCopyBatchSize, _sqlBulkCopyOptions, _ext);
+                _bulkCopyBatchSize, _sqlBulkCopyOptions, _ext, _customColumnCollationMappings);
         }
 
         /// <summary>

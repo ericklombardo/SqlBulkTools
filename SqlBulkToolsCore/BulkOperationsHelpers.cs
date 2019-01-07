@@ -19,7 +19,7 @@ namespace SqlBulkToolsCore
             public string NumericScale { get; set; }
         }
 
-        internal string BuildCreateTempTable(HashSet<string> columns, DataTable schema, bool? outputIdentity = null)
+        internal string BuildCreateTempTable(HashSet<string> columns, DataTable schema, bool? outputIdentity = null, Dictionary<string, string> customCollation = null)
         {
             Dictionary<string, string> actualColumns = new Dictionary<string, string>();
             Dictionary<string, string> actualColumnsMaxCharLength = new Dictionary<string, string>();
@@ -69,8 +69,13 @@ namespace SqlBulkToolsCore
                     columnType = GetVariableCharType(column, columnType, actualColumnsMaxCharLength);
                     columnType = GetDecimalPrecisionAndScaleType(column, columnType, actualColumnsPrecision);
                 }
+                var collation = string.Empty;
+                if (customCollation != null && customCollation.TryGetValue(column, out collation))
+                {
+                    collation = $"COLLATE {collation}";
+                }
 
-                paramList.Add("[" + column + "]" + " " + columnType);
+                paramList.Add($"[{column}] {columnType} {collation}");
             }
 
             string paramListConcatenated = string.Join(", ", paramList);

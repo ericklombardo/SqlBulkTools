@@ -25,6 +25,7 @@ namespace SqlBulkToolsCore
         private string _identityColumn;
         private bool _outputIdentity;
         private readonly Dictionary<string, string> _customColumnMappings;
+        private readonly Dictionary<string, string> _customColumnCollationMappings;
         private readonly int _sqlTimeout;
         private readonly int _bulkCopyTimeout;
         private readonly bool _bulkCopyEnableStreaming;
@@ -35,7 +36,7 @@ namespace SqlBulkToolsCore
         private bool _deleteWhenNotMatchedFlag;
         private readonly HashSet<string> _disableIndexList;
         private readonly SqlBulkCopyOptions _sqlBulkCopyOptions;
-        private readonly Dictionary<int, T> _outputIdentityDic; 
+        private readonly Dictionary<int, T> _outputIdentityDic;
 
         /// <summary>
         /// 
@@ -56,9 +57,10 @@ namespace SqlBulkToolsCore
         /// <param name="bulkCopyBatchSize"></param>
         /// <param name="sqlBulkCopyOptions"></param>
         /// <param name="ext"></param>
+        /// <param name="customColumnCollationMappings"></param>
         public BulkMerge(IEnumerable<T> list, string tableName, string schema, HashSet<string> columns, HashSet<string> disableIndexList, bool disableAllIndexes, string sourceAlias, string targetAlias,
             Dictionary<string, string> customColumnMappings, int sqlTimeout, int bulkCopyTimeout, bool bulkCopyEnableStreaming,
-            int? bulkCopyNotifyAfter, int? bulkCopyBatchSize, SqlBulkCopyOptions sqlBulkCopyOptions, BulkOperations ext)
+            int? bulkCopyNotifyAfter, int? bulkCopyBatchSize, SqlBulkCopyOptions sqlBulkCopyOptions, BulkOperations ext, Dictionary<string, string> customColumnCollationMappings)
         {
             _list = list;
             _tableName = tableName;
@@ -80,6 +82,7 @@ namespace SqlBulkToolsCore
             _matchTargetOn = new List<string>();
             _disableAllIndexes = disableAllIndexes;
             _sqlBulkCopyOptions = sqlBulkCopyOptions;
+            _customColumnCollationMappings = customColumnCollationMappings;
             ext.SetBulkExt(this);
         }
 
@@ -205,7 +208,7 @@ namespace SqlBulkToolsCore
                         command.CommandTimeout = _sqlTimeout;
                         
                         //Creating temp table on database
-                        command.CommandText = _helper.BuildCreateTempTable(_columns, dtCols, _outputIdentity);
+                        command.CommandText = _helper.BuildCreateTempTable(_columns, dtCols, _outputIdentity, _customColumnCollationMappings);
                         command.ExecuteNonQuery();
 
                         _helper.InsertToTmpTable(conn, transaction, dt, _bulkCopyEnableStreaming, _bulkCopyBatchSize,
@@ -341,7 +344,7 @@ namespace SqlBulkToolsCore
                         command.CommandTimeout = _sqlTimeout;
 
                         //Creating temp table on database
-                        command.CommandText = _helper.BuildCreateTempTable(_columns, dtCols);
+                        command.CommandText = _helper.BuildCreateTempTable(_columns, dtCols, customCollation: _customColumnCollationMappings);
                         await command.ExecuteNonQueryAsync();
 
                         await _helper.InsertToTmpTableAsync(conn, transaction, dt, _bulkCopyEnableStreaming, _bulkCopyBatchSize,

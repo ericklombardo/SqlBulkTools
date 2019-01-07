@@ -23,12 +23,14 @@ namespace SqlBulkToolsCore
         private readonly int? _bulkCopyBatchSize;
         private readonly BulkOperations _ext;
         private Dictionary<string, string> CustomColumnMappings { get; set; }
+        
         private readonly BulkOperationsHelpers _helper;
         private readonly HashSet<string> _columns;
         private bool _disableAllIndexes;
         private readonly HashSet<string> _disableIndexList;
         private readonly SqlBulkCopyOptions _sqlBulkCopyOptions;
 
+        private readonly Dictionary<string, string> _customColumnCollationMappings;
 
         /// <summary>
         /// 
@@ -67,6 +69,7 @@ namespace SqlBulkToolsCore
             _sqlBulkCopyOptions = sqlBulkCopyOptions;
             _ext = ext;
             CustomColumnMappings = new Dictionary<string, string>();
+            _customColumnCollationMappings = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -85,6 +88,13 @@ namespace SqlBulkToolsCore
         {
             var propertyName = _helper.GetPropertyName(source);
             CustomColumnMappings.Add(propertyName, destination);
+            return this;
+        }
+
+        public AllColumnSelect<T> CustomColumnCollationMapping(Expression<Func<T, object>> source, string collation)
+        {
+            var propertyName = _helper.GetPropertyName(source);
+            _customColumnCollationMappings.Add(propertyName, collation);
             return this;
         }
 
@@ -139,7 +149,7 @@ namespace SqlBulkToolsCore
         {
             return new BulkMerge<T>(_list, _tableName, _schema, _columns, _disableIndexList, _disableAllIndexes, _sourceAlias, _targetAlias,
                 CustomColumnMappings, _sqlTimeout, _bulkCopyTimeout, _bulkCopyEnableStreaming, _bulkCopyNotifyAfter,
-                _bulkCopyBatchSize, _sqlBulkCopyOptions, _ext);
+                _bulkCopyBatchSize, _sqlBulkCopyOptions, _ext, _customColumnCollationMappings);
         }
 
         /// <summary>
