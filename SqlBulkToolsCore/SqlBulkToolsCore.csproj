@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <PackageId>SqlBulkToolsCore</PackageId>
     <Description>Fork SqlBulkTools for dotnet core 2.1</Description>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>Lombardo</Authors>
     <Company>soyfreelancer.com</Company>
   </PropertyGroup>

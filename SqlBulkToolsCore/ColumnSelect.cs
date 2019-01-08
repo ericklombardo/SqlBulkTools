@@ -77,11 +77,15 @@ namespace SqlBulkToolsCore
         /// procedure for best performance. 
         /// </summary>
         /// <param name="columnName">Column name as represented in database</param>
+        /// <param name="collation">Collation for adding to the column</param>
         /// <returns></returns>
-        public ColumnSelect<T> AddColumn(Expression<Func<T, object>> columnName)
+        public ColumnSelect<T> AddColumn(Expression<Func<T, object>> columnName, string collation = null)
         {
             var propertyName = _helper.GetPropertyName(columnName);
             _columns.Add(propertyName);
+            if (collation != null)
+                _customColumnCollationMappings.Add(propertyName, collation);
+
             return this;
         }
 
